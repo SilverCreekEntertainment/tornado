@@ -52,6 +52,9 @@ if hasattr(ssl, 'match_hostname') and hasattr(ssl, 'CertificateError'):  # pytho
     SSLCertificateError = ssl.CertificateError
 elif ssl is None:
     ssl_match_hostname = SSLCertificateError = None  # type: ignore
+elif hasattr(ssl, 'CertificateError'):  # python 3.12+ removed match_hostname; ssl context handles it
+    SSLCertificateError = ssl.CertificateError
+    ssl_match_hostname = lambda cert, hostname: None  # type: ignore
 else:
     import backports.ssl_match_hostname
     ssl_match_hostname = backports.ssl_match_hostname.match_hostname
